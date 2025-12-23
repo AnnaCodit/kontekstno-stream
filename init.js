@@ -25,6 +25,13 @@ function renderChallenge(data) {
     } else {
         resultDiv.innerText = "Пришли странные данные";
     }
+
+}
+
+// test function for api
+function test() {
+
+
 }
 
 async function app() {
