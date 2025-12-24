@@ -1,0 +1,14 @@
+@import url("reset.css");
+
+/* core */
+
+body { background: #111; color: #FFF; font-size: 20px;}
+
+.page-width { max-width: 900px; margin: 0 auto;}
+
+header { display: flex; justify-content: space-between; padding: 40px 0;}
+header .settings { font-size: 40px;}
+.logo { font-size: 36px;}
+
+.guessing { display: flex;}
+.guessing > * { flex: 1;}

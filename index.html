@@ -5,26 +5,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link href="style.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://github.com/tmijs/tmi.js/releases/download/v1.8.5/tmi.min.js"></script>
 </head>
 
 <body>
-    <div class="logo">СЛОВОТРОН 9000</div>
-    <nav class="menu">
-        <ul>
-            <li>
-                <span>Играть</span>
-            </li>
-            <li>
-                <span>Настройки</span>
-            </li>
-        </ul>
-    </nav>
-    <div class="guessing">
-        <div class="last-words"></div>
-        <div class="best-match"></div>
+    <div class="page-width">
+        <header class="main">
+            <div class="logo">СЛОВОТРОН 9000</div>
+            <nav>
+                <ul>
+                    <li class="settings">
+                        <span>⚙️</span>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+        <div id="chat-container"></div>
+        <div class="settings">
+            <div class="setting"> Адрес Twitch-канала <input type="text" id="channel-name" placeholder="fra3a">
+            </div>
+            <div class="setting"> Перезапуск игры после победы (секунды) <input type="text" id="restart-time"
+                    placeholder="20">
+            </div>
+        </div>
+        <div class="leaderboard"> лидерборд </div>
+        <div class="guessing">
+            <div class="last-words"></div>
+            <div class="best-match"></div>
+        </div>
     </div>
-    <script src="init.js"></script>
+    <script src="js/ws.js"></script>
+    <script src="js/kontekstno.js"></script>
+    <script src="js/init.js"></script>
 </body>
 
 </html>
