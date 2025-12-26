@@ -10,5 +10,9 @@ header { display: flex; justify-content: space-between; padding: 40px 0;}
 header .settings { font-size: 40px;}
 .logo { font-size: 36px;}
 
-.guessing { display: flex;}
+.guessing { display: flex; gap: 20px;}
 .guessing > * { flex: 1;}
+
+.guessing .msg { border: 1px solid #DDD; margin-bottom: 10px; border-radius: 10px; }
+.guessing .word-and-distance { display: flex; justify-content: space-between; align-items: center; padding: 10px;}
+.guessing .word-and-distance {}

@@ -78,7 +78,7 @@ async function process_message(name, color, word) {
     // добавить слово в колонку .guessing .best-match в верх списка
     const best_match_container = document.querySelector('.guessing .best-match');
 
-    const html = `
+    const new_message = `
         <div class="msg" data-distance="${$word_check.distance}">
 
             <div class="bg" style="width: 50%"></div>
@@ -96,14 +96,30 @@ async function process_message(name, color, word) {
     // И добавляем в список
     checked_words.add(word);
 
+    // Создаем элемент из HTML строки
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = new_message.trim();
+    const newMsgElement = tempDiv.firstElementChild;
 
-батон 30
-хлеб 40
+    // Определяем позицию вставки на основе дистанции
+    const container = best_match_container;
+    const children = Array.from(container.children);
+    let insertIndex = children.length;
+    const newDistance = parseFloat($word_check.distance);
 
-    //
+    for (let i = 0; i < children.length; i++) {
+        const childDistance = parseFloat(children[i].dataset.distance);
+        if (childDistance > newDistance) {
+            insertIndex = i;
+            break;
+        }
+    }
 
-    // добавить сообщение в .guessing .last-words в верх списка
-
-    // добавить сообщение в отсортированный список по дистанции
+    // Вставляем элемент в правильную позицию
+    if (insertIndex === children.length) {
+        container.appendChild(newMsgElement);
+    } else {
+        container.insertBefore(newMsgElement, children[insertIndex]);
+    }
 
 }
