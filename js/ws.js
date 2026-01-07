@@ -38,22 +38,27 @@ function create_chat_connection(channel_name = '') {
 
 }
 
-function addMessage(name, color, text) {
-    const container = document.getElementById('chat-container');
-    const div = document.createElement('div');
-    div.className = 'msg-row';
+// function addMessage(name, color, text) {
+//     const container = document.getElementById('chat-container');
+//     const div = document.createElement('div');
+//     div.className = 'msg-row';
 
-    // Формируем HTML с цветом ника
-    div.innerHTML = `<span class="username" style="color: ${color}">${name}:</span> ${text}`;
+//     // Формируем HTML с цветом ника
+//     div.innerHTML = `<span class="username" style="color: ${color}">${name}:</span> ${text}`;
 
-    container.appendChild(div);
-    container.scrollTop = container.scrollHeight; // Скролл вниз
-}
+//     container.appendChild(div);
+//     container.scrollTop = container.scrollHeight; // Скролл вниз
+// }
 
 
 const checked_words = new Set();
 
 async function process_message(name, color, word) {
+
+    // перевод слова в нижний регистр
+    word = word.toLowerCase();
+    // сделать первую букву большой
+    word = word.charAt(0).toUpperCase() + word.slice(1);
 
     // Проверяем, есть ли слово в списке
     if (checked_words.has(word)) {
@@ -78,15 +83,34 @@ async function process_message(name, color, word) {
     // добавить слово в колонку .guessing .best-match в верх списка
     const best_match_container = document.querySelector('.guessing .best-match');
 
+    // calculate color by distance
+    const distance = $word_check.distance;
+    let color_class = '#00ff00'; // defaulWt green
+    if (distance >= 2800) {
+        color_class = '#ff0000'; // red
+    } else if (distance >= 1400) {
+        color_class = '#ffa500'; // orange
+    } else if (distance >= 550) {
+        color_class = '#ffff00'; // yellow
+    } else if (distance >= 150) {
+        color_class = '#00ff00'; // green
+    }
+
+    // нам нужно расчитать ширину полоски в процентах в зависимости от переменной distance. чем меньше distance, тем больше ширина полоски. 2800 distance это 0% ширины, а 1 distance это 100% ширины
+    const width = calculateWidth(distance);
+    // const width = Math.max(0, 100 - (distance / 2800) * 100);
+
     const new_message = `
         <div class="msg" data-distance="${$word_check.distance}">
 
-            <div class="bg" style="width: 50%"></div>
+            <div class="bg" style="width: ${width}%"></div>
 
             <div class="word-and-distance">
                 <div class="word">${word}</div>
                 <div class="distance">${$word_check.distance}</div>
             </div>
+
+            <div class="name" style="color: ${color}">${name}</div>
 
         </div>
     `;
@@ -123,3 +147,30 @@ async function process_message(name, color, word) {
     }
 
 }
+
+function message_template(word, distance, name, color) {
+    return `
+        <div class="msg" data-distance="${distance}">
+            <div class="bg" style="width: 50%"></div>
+            <div class="word-and-distance">
+                <div class="word">${word}</div>
+                <div class="distance">${distance}</div>
+            </div>
+        </div>
+    `;
+}
+
+function calculateWidth(distance, maxDistance = 2800) {
+    const normalized = distance / maxDistance; // 0-1
+    const progress = Math.pow(normalized, 1.8); // 1.8 = сжатие 
+    return Math.max(0, progress * 100);
+}
+
+// function calculateWidth(distance, maxDistance = 2800) {
+//     const normalized = distance / maxDistance;
+//     if (normalized <= 0.8) {
+//         return normalized * 40;
+//     } else {
+//         return 40 + (normalized - 0.8) * 60 * 3;
+//     }
+// }

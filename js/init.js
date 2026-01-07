@@ -13,17 +13,6 @@ let secret_word_id = '';
 // localStorage.setItem('channel_name', channel_name);
 
 
-// menu click handlers
-// function initMenu() {
-//     const menuItems = document.querySelectorAll('.menu ul li span');
-
-//     menuItems.forEach(item => {
-//         item.addEventListener('click', () => {
-//             console.log('Menu clicked:', item.textContent);
-//         });
-//     });
-// }
-
 // basic app init
 async function app() {
     try {

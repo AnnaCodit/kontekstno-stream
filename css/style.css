@@ -2,17 +2,67 @@
 
 /* core */
 
-body { background: #111; color: #FFF; font-size: 20px;}
+body {
+    background: #111;
+    color: #FFF;
+    font-size: 20px;
+}
 
-.page-width { max-width: 900px; margin: 0 auto;}
+.page-width {
+    max-width: 900px;
+    margin: 0 auto;
+}
 
-header { display: flex; justify-content: space-between; padding: 40px 0;}
-header .settings { font-size: 40px;}
-.logo { font-size: 36px;}
+header {
+    display: flex;
+    justify-content: space-between;
+    padding: 40px 0;
+}
 
-.guessing { display: flex; gap: 20px;}
-.guessing > * { flex: 1;}
+header .settings {
+    font-size: 40px;
+}
 
-.guessing .msg { border: 1px solid #DDD; margin-bottom: 10px; border-radius: 10px; }
-.guessing .word-and-distance { display: flex; justify-content: space-between; align-items: center; padding: 10px;}
+.logo {
+    font-size: 36px;
+}
+
+.guessing {
+    display: flex;
+    gap: 20px;
+}
+
+.guessing>* {
+    flex: 1;
+}
+
+.guessing .msg {
+    border: 1px solid #DDD;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    position: relative;
+}
+
+.guessing .word-and-distance {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
 .guessing .word-and-distance {}
+
+.guessing .bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.guessing .name {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    height: 100%;
+}
