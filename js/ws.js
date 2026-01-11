@@ -1,5 +1,6 @@
 // Настройки клиента
 
+let is_game_finished = false;
 
 function create_chat_connection(channel_name = '') {
 
@@ -55,6 +56,8 @@ const checked_words = new Set();
 
 async function process_message(name, nickname_color, word) {
 
+    if (is_game_finished) return;
+
     // перевод слова в нижний регистр
     word = word.toLowerCase();
     // сделать первую букву большой
@@ -78,6 +81,10 @@ async function process_message(name, nickname_color, word) {
     if (!$word_check.distance) {
         console.log(`Слово "${word}" не имеет дистанци.`);
         return
+    }
+
+    if ($word_check.distance == 1) {
+        handle_win(name);
     }
 
     // добавить слово в колонку .guessing .best-match в верх списка
@@ -172,3 +179,26 @@ function message_template(word, distance, name, nickname_color) {
 //         return 40 + (normalized - 0.8) * 60 * 3;
 //     }
 // }
+
+function handle_win(winner_name) {
+    is_game_finished = true;
+    const winnerBlock = document.querySelector('.winner');
+    winnerBlock.innerText = `Победитель: ${winner_name}`;
+    winnerBlock.style.display = 'block';
+
+    const timeout = (typeof restart_time !== 'undefined' ? restart_time : 20) * 1000;
+
+    setTimeout(async () => {
+        try {
+            secret_word_id = await generate_secret_word();
+        } catch (e) {
+            console.error(e);
+        }
+
+        document.querySelector('.guessing .last-words').innerHTML = '';
+        document.querySelector('.guessing .best-match').innerHTML = '';
+        checked_words.clear();
+        winnerBlock.style.display = 'none';
+        is_game_finished = false;
+    }, timeout);
+}
