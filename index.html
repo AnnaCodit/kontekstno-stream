@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Словотрон 9000</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="https://github.com/tmijs/tmi.js/releases/download/v1.8.5/tmi.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,7 +17,8 @@
 <body>
     <div class="page-width">
         <header class="main">
-            <div class="logo">🧠 СЛОВОТРОН 9000</div>
+            <div class="logo"> 🧠 СЛОВОТРОН <span>9000</span>
+            </div>
             <nav>
                 <ul>
                     <li id="menu-button-info" class="info">
@@ -33,20 +34,19 @@
             </nav>
         </header>
         <section id="settings" class="content-box" style="display: none;">
-            <div class="setting"> Адрес Twitch-канала <input type="text" id="channel-name" placeholder="fra3a">
+            <div class="setting"> Адрес Twitch-канала <input type="text" id="channel-name" name="channel_name"
+                    placeholder="fra3a">
             </div>
             <div class="setting"> Перезапуск игры после победы (секунды) <input type="text" id="restart-time"
-                    placeholder="20">
+                    name="restart_time" placeholder="20">
             </div>
             <div class="setting"> Поле для добавления слова <input type="checkbox" id="allow-add-word-checkbox"
                     name="allow-add-word">
             </div>
-            <div style="margin-top: 20px;">
-                <button id="test-win-btn">Тест победы</button>
-            </div>
         </section>
         <section id="info" style="">Привет 👋 Укажи в настройках адрес своего Twitch-канала и начни писать в чате слова.
-            Чем меньше цифра справа от слова - тем ближе вы к отгадке! Удачи 🎉</section>
+            Чем меньше цифра справа от слова - тем ближе вы к отгадке! Удачи <span id="test-win-btn">🎉</span>
+        </section>
         <section class="leaderboard" style="display: none;"> Лидерборд: </section>
         <section class="winner" style="display: none;"> Победитель: </section>
         <section class="restart-timer" style="display: none;">
@@ -57,6 +57,9 @@
             <div class="last-words"></div>
             <div class="best-match"></div>
         </section>
+    </div>
+    <div style="margin-top: 20px; display: none;">
+        <button id="test-win-btn">Тест победы</button>
     </div>
     <script src="js/config.js"></script>
     <script src="js/ws.js"></script>

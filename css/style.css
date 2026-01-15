@@ -52,9 +52,17 @@ section {
     margin-bottom: 40px;
 }
 
+.logo span {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 11px;
+}
+
 .logo {
     font-size: 36px;
     font-weight: bold;
+    position: relative;
 }
 
 #settings {
