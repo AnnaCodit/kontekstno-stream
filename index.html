@@ -54,7 +54,13 @@
             чате слова. Чем меньше цифра справа от слова - тем ближе вы к отгадке! Удачи <span
                 id="test-win-btn">🎉</span>
         </section>
-        <section id="leaderboard" style="display: none;"> Лидерборд: </section>
+        <section id="leaderboard" class="content-box" style="display: none;">
+            <div class="title">🏆 Топ-5 Победителей</div>
+            <div class="list"></div>
+            <div class="controls">
+                <button id="reset-leaderboard-btn" class="reset-btn">Сбросить таблицу</button>
+            </div>
+        </section>
         <section id="winner" style="display: none;">
             <div class="title">Победитель: </div>
             <div class="content">
@@ -76,6 +82,7 @@
     </div>
     <script src="js/config.js"></script>
     <script src="js/ws.js"></script>
+    <script src="js/leaderboard.js"></script>
     <script src="js/init.js"></script>
 </body>
 

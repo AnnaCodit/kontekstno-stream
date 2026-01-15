@@ -128,6 +128,26 @@ async function getTwitchUserData(username) {
 }
 
 
+// Event Listeners for Leaderboard
+const leaderboardBtn = document.getElementById('menu-button-leaderboard');
+if (leaderboardBtn) {
+    leaderboardBtn.addEventListener('click', () => {
+        const leaderboardSection = document.getElementById('leaderboard');
+        // Toggle display
+        const isVisible = leaderboardSection.style.display !== 'none';
+        leaderboardSection.style.display = isVisible ? 'none' : 'flex';
+
+        if (!isVisible) {
+            renderLeaderboard();
+        }
+    });
+}
+
+const resetLeaderboardBtn = document.getElementById('reset-leaderboard-btn');
+if (resetLeaderboardBtn) {
+    resetLeaderboardBtn.addEventListener('click', resetLeaderboard);
+}
+
 // basic app init
 async function app() {
     try {
