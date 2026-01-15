@@ -125,6 +125,12 @@ function message_template(word, distance, name, nickname_color) {
 function handle_win(winner_name) {
     is_game_finished = true;
 
+    if (typeof updateLeaderboard === 'function') {
+        updateLeaderboard(winner_name);
+        const leaderboardSection = document.getElementById('leaderboard');
+        if (leaderboardSection) leaderboardSection.style.display = 'flex';
+    }
+
     getTwitchUserData(winner_name).then((user) => {
         console.log(user);
         document.getElementById('winner-avatar').src = user.logo;
@@ -147,6 +153,10 @@ function handle_win(winner_name) {
         document.querySelector('.guessing .best-match').innerHTML = '';
         checked_words.clear();
         winnerBlock.style.display = 'none';
+
+        const leaderboardSection = document.getElementById('leaderboard');
+        if (leaderboardSection) leaderboardSection.style.display = 'none';
+
         is_game_finished = false;
     }, timeout);
 }
