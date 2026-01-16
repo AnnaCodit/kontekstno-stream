@@ -25,7 +25,7 @@ jobs:
           username: ${{ secrets.SFTP_USER }}
           server: ${{ secrets.SFTP_HOST }}
           port: 2222
-          ssh_password: ${{ secrets.SFTP_PASSWORD }}
+          password: ${{ secrets.SFTP_PASSWORD }}
           local_path: './'
           remote_path: '/slovotron.fra3a.ru/'
           sftp_only: true
