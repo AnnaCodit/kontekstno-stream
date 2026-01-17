@@ -3,6 +3,89 @@
 let secret_word_id = '';
 let words_count = 0;
 let tmi_client = null;
+let welcomeHideTimer = null;
+let skipWelcomeOnce = false;
+let gameStartInProgress = false;
+
+function showWelcome() {
+    const welcomeSection = document.getElementById('welcome');
+    if (!welcomeSection) return;
+
+    if (welcomeHideTimer) {
+        clearTimeout(welcomeHideTimer);
+        welcomeHideTimer = null;
+    }
+    welcomeSection.style.display = 'flex';
+    requestAnimationFrame(() => {
+        welcomeSection.classList.add('is-visible');
+    });
+}
+
+function hideWelcome() {
+    const welcomeSection = document.getElementById('welcome');
+    if (!welcomeSection) return;
+
+    welcomeSection.classList.remove('is-visible');
+    if (welcomeHideTimer) {
+        clearTimeout(welcomeHideTimer);
+    }
+    welcomeHideTimer = setTimeout(() => {
+        welcomeSection.style.display = 'none';
+    }, 360);
+}
+
+function readSettingsFromInputs() {
+    const channelInput = document.getElementById('channel-name');
+    const restartInput = document.getElementById('restart-time');
+    const channelValue = channelInput ? channelInput.value.trim() : '';
+    const restartValue = restartInput ? parseInt(restartInput.value, 10) : NaN;
+
+    return {
+        channelValue,
+        restartValue: Number.isFinite(restartValue) ? restartValue : null
+    };
+}
+
+function applySettingsFromInputs(persist) {
+    const { channelValue, restartValue } = readSettingsFromInputs();
+
+    if (channelValue) {
+        channel_name = channelValue;
+        if (persist) {
+            localStorage.setItem('channel_name', channelValue);
+        }
+    }
+
+    if (restartValue !== null) {
+        restart_time = restartValue;
+        if (persist) {
+            localStorage.setItem('restart_time', String(restartValue));
+        }
+    }
+
+    return !!channelValue;
+}
+
+async function startGame() {
+    if (!channel_name || gameStartInProgress) return;
+    gameStartInProgress = true;
+    try {
+        hideWelcome();
+        const settingsSection = document.getElementById('settings');
+        if (settingsSection) settingsSection.style.display = 'none';
+        const guessingMeta = document.querySelector('.guessing-meta');
+        if (guessingMeta) guessingMeta.style.display = 'block';
+        const totalWordsValue = document.getElementById('total-words-value');
+        if (totalWordsValue) totalWordsValue.textContent = '0';
+        secret_word_id = await generate_secret_word();
+        if (typeof window.startRoundHints === 'function') {
+            window.startRoundHints();
+        }
+        create_chat_connection(channel_name);
+    } finally {
+        gameStartInProgress = false;
+    }
+}
 
 async function generate_secret_word() {
     const data = await kontekstno_query('random-challenge');
@@ -13,14 +96,13 @@ async function generate_secret_word() {
 async function kontekstno_query(method = '', word = '', challenge_id = '') {
 
     let url = '';
-    // console.log(method);
 
     if (method == 'random-challenge') {
         url = "https://xn--80aqu.xn--e1ajbkccewgd.xn--p1ai/" + method;
     }
 
     if (method == 'score') {
-        url = "https://апи.контекстно.рф/score?challenge_id=" + challenge_id + "&word=" + word + "&challenge_type=random";
+        url = "https://xn--80aqu.xn--e1ajbkccewgd.xn--p1ai/score?challenge_id=" + challenge_id + "&word=" + word + "&challenge_type=random";
     }
 
 
@@ -44,30 +126,33 @@ function create_chat_connection(channel_name = '') {
         channels: [channel_name]
     });
 
-    // Подключаемся
     tmi_client.connect();
 
-    // Слушаем сообщения
-    // user — это объект со всей инфой (цвет ника, бейджи, id сообщения и т.д.)
-    tmi_client.on('message', (channel, user, message, self) => {
+    tmi_client.on('message', (channel, tags, message, self) => {
 
-        // console.log(channel, user, message);
 
-        const color = user['color'] || '#00FF00';
-        // const name = tags['display-name'];
+        const color = tags['color'] || '#00FF00';
+        const name = tags['display-name'];
 
-        // если в сообщении больше двух слов то игнорируем
         if (message.split(' ').length > 2) return;
 
-        // prevent xss attack from message
-        message = message.replace(/[^a-zA-Zа-яА-ЯёЁ0-9]/g, '');
-        message = message.replace(/ё/g, 'е');
+        message = message.replace(/[^\p{L}0-9]/gu, '');
+        if (!message) return;
 
         words_count++;
         if (words_count === 1) {
-            document.getElementById('info').style.display = 'none';
+            if (typeof hideInfoPanel === 'function') {
+                hideInfoPanel();
+            } else {
+                const infoSection = document.getElementById('info');
+                if (infoSection) infoSection.classList.remove('is-visible');
+            }
         }
-        process_message(user, color, message);
+
+        process_message(name, color, message).catch((error) => {
+            console.error('Word check failed:', error);
+        });
+
     });
 
 }
@@ -94,18 +179,40 @@ function loadSettings() {
 const saveBtn = document.getElementById('save-settings-btn');
 if (saveBtn) {
     saveBtn.addEventListener('click', () => {
-        const channelInput = document.getElementById('channel-name');
-        const restartInput = document.getElementById('restart-time');
+        applySettingsFromInputs(true);
+    });
+}
 
-        if (channelInput && channelInput.value) {
-            localStorage.setItem('channel_name', channelInput.value.trim());
+const restartTimeInput = document.getElementById('restart-time');
+if (restartTimeInput) {
+    restartTimeInput.addEventListener('input', (event) => {
+        const value = event.target.value;
+        const cleaned = value.replace(/\D+/g, '');
+        if (value !== cleaned) {
+            event.target.value = cleaned;
         }
+    });
+}
 
-        if (restartInput && restartInput.value) {
-            localStorage.setItem('restart_time', restartInput.value.trim());
+const welcomeBtn = document.getElementById('welcome-start-btn');
+if (welcomeBtn) {
+    welcomeBtn.addEventListener('click', () => {
+        hideWelcome();
+        const settingsSection = document.getElementById('settings');
+        loadSettings();
+        if (settingsSection) {
+            settingsSection.style.display = 'block';
         }
+    });
+}
 
-        app();
+const startBtn = document.getElementById('start-game-btn');
+if (startBtn) {
+    startBtn.addEventListener('click', () => {
+        if (applySettingsFromInputs(false)) {
+            skipWelcomeOnce = true;
+            startGame();
+        }
     });
 }
 
@@ -117,27 +224,70 @@ async function getTwitchUserData(username) {
 
         if (data && data[0]) {
             return data[0];
-        } else {
-            console.error("Пользователь не найден");
-            return null;
         }
+
+        console.error('User not found.');
+        return null;
     } catch (error) {
-        console.error("Ошибка запроса:", error);
+        console.error('Request error:', error);
+        return null;
     }
 }
 
 
-// Event Listeners for Leaderboard
+const LEADERBOARD_ANIM_MS = 250;
+let leaderboardHideTimer = null;
+
+function showLeaderboardPanel() {
+    const leaderboardSection = document.getElementById('leaderboard');
+    if (!leaderboardSection) return;
+
+    if (leaderboardHideTimer) {
+        clearTimeout(leaderboardHideTimer);
+        leaderboardHideTimer = null;
+    }
+
+    leaderboardSection.style.display = 'flex';
+    requestAnimationFrame(() => {
+        leaderboardSection.classList.add('is-visible');
+    });
+
+    if (typeof renderLeaderboard === 'function') {
+        renderLeaderboard();
+    }
+}
+
+function hideLeaderboardPanel() {
+    const leaderboardSection = document.getElementById('leaderboard');
+    if (!leaderboardSection) return;
+
+    leaderboardSection.classList.remove('is-visible');
+    if (leaderboardHideTimer) {
+        clearTimeout(leaderboardHideTimer);
+    }
+    leaderboardHideTimer = setTimeout(() => {
+        leaderboardSection.style.display = 'none';
+    }, LEADERBOARD_ANIM_MS);
+}
+
+window.showLeaderboardPanel = showLeaderboardPanel;
+window.hideLeaderboardPanel = hideLeaderboardPanel;
+
 const leaderboardBtn = document.getElementById('menu-button-leaderboard');
 if (leaderboardBtn) {
     leaderboardBtn.addEventListener('click', () => {
+        const welcomeSection = document.getElementById('welcome');
+        if (welcomeSection && welcomeSection.classList.contains('is-visible')) {
+            return;
+        }
         const leaderboardSection = document.getElementById('leaderboard');
-        // Toggle display
-        const isVisible = leaderboardSection.style.display !== 'none';
-        leaderboardSection.style.display = isVisible ? 'none' : 'flex';
+        if (!leaderboardSection) return;
 
-        if (!isVisible) {
-            renderLeaderboard();
+        const isVisible = leaderboardSection.classList.contains('is-visible');
+        if (isVisible) {
+            hideLeaderboardPanel();
+        } else {
+            showLeaderboardPanel();
         }
     });
 }
@@ -147,24 +297,27 @@ if (resetLeaderboardBtn) {
     resetLeaderboardBtn.addEventListener('click', resetLeaderboard);
 }
 
-// basic app init
 async function app() {
     try {
         const ready = loadSettings();
 
         if (ready) {
+            const shouldSkipWelcome = skipWelcomeOnce;
+            skipWelcomeOnce = false;
+            if (shouldSkipWelcome) {
+                hideWelcome();
+            } else {
+                showWelcome();
+            }
             document.getElementById('settings').style.display = 'none';
-            reset_round();
-            secret_word_id = await generate_secret_word();
-            console.log('ID секрутного слова: ', secret_word_id);
-            create_chat_connection(channel_name);
+            if (shouldSkipWelcome) {
+                await startGame();
+            }
         } else {
-            document.getElementById('settings').style.display = 'block';
+            document.getElementById('settings').style.display = 'none';
+            showWelcome();
         }
 
-        // initMenu();
-        // const data = await getData();
-        // renderChallenge(data);
     } catch (error) {
         console.error(error);
     }

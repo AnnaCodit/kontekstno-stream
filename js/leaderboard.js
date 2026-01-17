@@ -1,4 +1,3 @@
-// Leaderboard Logic
 const LEADERBOARD_KEY = 'word_game_leaderboard';
 
 function getLeaderboardData() {
@@ -28,10 +27,9 @@ function renderLeaderboard() {
 
     listContainer.innerHTML = '';
 
-    // Convert to array and sort
     const sortedWinners = Object.entries(data)
-        .sort((a, b) => b[1] - a[1]) // Sort by count descending
-        .slice(0, 5); // Take top 5
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
 
     if (sortedWinners.length === 0) {
         listContainer.innerHTML = '<div style="text-align: center; color: #777;">Пока нет победителей</div>';
@@ -52,12 +50,12 @@ function renderLeaderboard() {
 
         const nameDiv = document.createElement('div');
         nameDiv.className = 'name';
-        nameDiv.textContent = name; // Safe assignment
+        nameDiv.textContent = name;
         itemDiv.appendChild(nameDiv);
 
         const scoreDiv = document.createElement('div');
         scoreDiv.className = 'score';
-        scoreDiv.textContent = `${wins} 🏆`;
+        scoreDiv.textContent = `${wins} побед`;
         itemDiv.appendChild(scoreDiv);
 
         listContainer.appendChild(itemDiv);
@@ -65,7 +63,7 @@ function renderLeaderboard() {
 }
 
 function resetLeaderboard() {
-    if (confirm('Вы уверены, что хотите сбросить таблицу лидеров?')) {
+    if (confirm('Ты уверен, что хочешь сбросить таблицу победителей?')) {
         localStorage.removeItem(LEADERBOARD_KEY);
         renderLeaderboard();
     }

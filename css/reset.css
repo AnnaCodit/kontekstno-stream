@@ -1,6 +1,3 @@
-/* Reset styles */
-
-
 * {
     box-sizing: border-box;
 }
@@ -73,8 +70,6 @@ td {
     font: inherit;
     vertical-align: baseline;
 }
-
-/* HTML5 display-role reset for older browsers */
 
 article,
 aside,

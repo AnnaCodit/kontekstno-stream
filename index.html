@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
+﻿<!DOCTYPE html>
+<html lang="ru">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Словотрон 9000</title>
+    <title>СЛОВОТРОН 9000</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="https://github.com/tmijs/tmi.js/releases/download/v1.8.5/tmi.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,54 +17,85 @@
 <body>
     <div class="page-width">
         <header class="main">
-            <div class="logo"> 🧠 СЛОВОТРОН <span>9000</span>
+            <div class="logo">&#x1F9E0; СЛОВОТРОН
+                <span class="logo-meta">
+                    <span class="edition">WWF.edition</span>
+                    <span class="badge">9000</span>
+                </span>
             </div>
             <nav>
                 <ul>
                     <li id="menu-button-info" class="info">
-                        <span title="Помощь">ℹ️</span>
+                        <span class="nav-icon icon-help" title="Помощь">
+                            <img src="assets/icons/help.svg" alt="Помощь">
+                        </span>
                     </li>
                     <li id="menu-button-leaderboard" class="leaderboard">
-                        <span title="Лидерборд">🏆</span>
+                        <span class="nav-icon icon-leaderboard" title="Лидерборд">
+                            <img src="assets/icons/leaderboard.svg" alt="Лидерборд">
+                        </span>
                     </li>
                     <li id="menu-button-settings" class="settings">
-                        <span title="Настройки">⚙️</span>
+                        <span class="nav-icon icon-settings" title="Настройки">
+                            <img src="assets/icons/settings.svg" alt="Настройки">
+                        </span>
                     </li>
                 </ul>
             </nav>
         </header>
-        <section id="info" class="content-box">
-            <div>Привет 👋 Укажи в настройках адрес своего Twitch-канала и начни писать в чате слова. Чем меньше цифра
-                справа от слова - тем ближе вы к отгадке! Удачи <span id="test-win-btn">🎉</span></div>
+        <section id="welcome" class="content-box" style="display: none;">
+            <div class="welcome-title">Добро пожаловать!</div>
+            <div class="welcome-text">Подключи свой Twitch-канал и начинай игру.</div>
+            <button id="welcome-start-btn" class="welcome-button">Играть</button>
         </section>
-        <section id="settings" class="content-box" style="display: none;">
-            <div class="setting">
-                <div class="title">Адрес Twitch-канала</div>
-                <input type="text" id="channel-name" name="channel_name" placeholder="fra3a">
-            </div>
-            <div class="setting">
-                <div class="title">Перезапуск игры после победы (секунды)</div>
-                <input type="text" id="restart-time" name="restart_time" placeholder="20">
-            </div>
-            <div class="setting">
-                <div class="title">Поле для добавления слова</div>
-                <input type="checkbox" id="allow-add-word-checkbox" name="allow-add-word">
-            </div>
-            <div class="setting">
-                <button id="save-settings-btn">Сохранить</button>
-            </div>
-        </section>
-        <section id="leaderboard" class="content-box" style="display: none;">
-            <div class="title">🏆 Топ Победителей</div>
-            <div class="list"></div>
-            <div class="controls">
-                <button id="reset-leaderboard-btn" class="reset-btn">Сбросить таблицу</button>
+        <div class="panel-row">
+            <section id="settings" class="content-box" style="display: none;">
+                <button type="button" id="settings-close-btn" class="settings-close" aria-label="Закрыть настройки">×</button>
+                <div class="setting">
+                    <div class="title">Адрес Twitch-канала</div>
+                    <input type="text" id="channel-name" name="channel_name" placeholder="fra3a">
+                </div>
+                <div class="setting">
+                    <div class="title">Перезапуск игры после победы (секунды)</div>
+                    <input type="number" id="restart-time" name="restart_time" placeholder="30" min="1" step="1" inputmode="numeric" pattern="[0-9]*">
+                </div>
+                <div class="setting">
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="allow-add-word-checkbox" name="allow-add-word">
+                        <div class="title">Поле для добавления слова</div>
+                    </div>
+                </div>
+                <div class="setting actions">
+                    <button id="save-settings-btn" class="settings-button">Сохранить</button>
+                    <button id="start-game-btn" class="settings-button">Начать</button>
+                </div>
+                <div class="settings-tip">совет - нажми кнопку помощи справа сверху</div>
+            </section>
+            <section id="leaderboard" class="content-box" style="display: none;">
+                <div class="title">&#x1F3C6; Топ-5 Победителей</div>
+                <div class="list"></div>
+                <div class="controls">
+                    <button id="reset-leaderboard-btn" class="reset-btn">Сбросить таблицу</button>
+                </div>
+            </section>
+        </div>
+        <section id="info" class="content-box" aria-live="polite">
+            <button type="button" class="info-close" aria-label="Закрыть">×</button>
+            <div class="info-body">Укажи Twitch-канал в настройках и начинай писать слова в чате. Чем меньше число рядом со словом, тем ты ближе к ответу. Удачи! <span id="test-win-btn">&#x1F389;</span></div>
+            <div class="info-timer">
+                <span class="info-timer-value">10s</span>
+                <div class="info-timer-bar">
+                    <span class="info-timer-progress"></span>
+                </div>
             </div>
         </section>
         <section id="winner" style="display: none;">
             <div class="title">Победитель: </div>
             <div class="content">
-                <img src="https://placecats.com/300/300" alt="" id="winner-avatar">
+                <div class="winner-avatar">
+                    <img src="https://placecats.com/300/300" alt="" id="winner-avatar">
+                    <span class="winner-crown" aria-hidden="true">&#x1F451;</span>
+                </div>
                 <div class="winner-name"></div>
             </div>
         </section>
@@ -72,20 +103,35 @@
             <span>Перезапуск через: </span>
             <span id="restart-timer-value">0</span>
         </section>
+        <div class="guessing-meta" style="display: none;">
+            Всего слов: <span id="total-words-value">0</span>
+        </div>
+        <div id="hint" class="hint" style="display: none;">
+            <button type="button" class="hint-close" aria-label="Закрыть подсказку">×</button>
+            <div class="hint-body">
+                <span class="hint-label">Подсказка</span>
+                <span class="hint-text"></span>
+            </div>
+            <div class="hint-controls">
+                <div class="hint-rotate-timer">10s</div>
+                <div class="hint-nav-group">
+                    <button type="button" class="hint-nav hint-prev" aria-label="Предыдущая подсказка">&lt;</button>
+                    <div class="hint-dots" aria-hidden="true"></div>
+                    <button type="button" class="hint-nav hint-next" aria-label="Следующая подсказка">&gt;</button>
+                </div>
+            </div>
+        </div>
+        <div id="hint-countdown" class="hint-countdown" style="display: none;">120s</div>
         <section class="guessing">
             <div class="last-words"></div>
             <div class="best-match"></div>
         </section>
     </div>
-    <div style="margin-top: 20px; display: none;">
-        <button id="test-win-btn">Тест победы</button>
-    </div>
+    <div id="celebration" class="celebration" aria-hidden="true"></div>
     <script src="js/config.js"></script>
     <script src="js/ws.js"></script>
     <script src="js/leaderboard.js"></script>
     <script src="js/init.js"></script>
 </body>
-<!-- test commit -->
-<div class="test-commit"></div>
 
 </html>
