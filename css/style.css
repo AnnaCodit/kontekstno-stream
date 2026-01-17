@@ -68,6 +68,8 @@ section {
     position: relative;
 }
 
+#info {}
+
 #settings {
     padding: 20px;
     background-color: #222;
@@ -161,6 +163,7 @@ section {
     font-size: 14px;
     padding: 10px 15px;
 }
+
 .reset-btn:hover {
     background-color: #555;
     box-shadow: none;
@@ -299,10 +302,11 @@ input[type="submit"]:hover {
 }
 
 @keyframes fadeInOpacity {
-	0% {
-		opacity: 0;
-	}
-	100% {
-		opacity: 1;
-	}
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
 }
