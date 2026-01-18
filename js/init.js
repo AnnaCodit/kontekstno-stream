@@ -56,8 +56,10 @@ function create_chat_connection(channel_name = '') {
         const color = user['color'] || '#00FF00';
         // const name = tags['display-name'];
 
-        // если в сообщении больше двух слов то игнорируем
-        if (message.split(' ').length > 2) return;
+        // если в сообщении больше двух слов, 20 символов
+        // слишком короткое или число, то игнорируем
+        if (message.split(' ').length > 2  || message.length > 20 
+        || message.length === 1 || !isNaN(message)) return;
 
         // prevent xss attack from message
         message = message.replace(/[^a-zA-Zа-яА-ЯёЁ0-9]/g, '');
