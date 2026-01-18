@@ -3,6 +3,7 @@
 let secret_word_id = '';
 let words_count = 0;
 let tmi_client = null;
+let wordQueue = [];
 
 async function generate_secret_word() {
     const data = await kontekstno_query('random-challenge');
@@ -69,8 +70,20 @@ function create_chat_connection(channel_name = '') {
         if (words_count === 1) {
             document.getElementById('info').style.display = 'none';
         }
-        process_message(user, color, message);
+        wordQueue.push({ 'user': user, 'color': color, 'msg': message })
+        if (wordQueue.length === 1) {
+            runQueue()
+        }
     });
+
+}
+
+async function runQueue() {
+        await process_message(wordQueue[0].user, wordQueue[0].color, wordQueue[0].msg)
+        wordQueue.shift()
+        if (wordQueue.length > 0) {
+            runQueue()
+        }
 
 }
 
