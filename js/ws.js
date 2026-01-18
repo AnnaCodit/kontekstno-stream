@@ -2,6 +2,7 @@
 
 let is_game_finished = false;
 const checked_words = new Set();
+const last_words_container = document.querySelector('.guessing .last-words');
 
 const iwawwa = new Set(['ивавва', 'ивава', 'акане', 'аканэ', 'iwawwa', 'iwawa', 'akane']);
 const iwawwa_img = [
@@ -47,7 +48,6 @@ async function process_message(user, nickname_color, word, force_win = false) {
     if (checked_words.has(word)) {
         console.log(`Слово "${word}" уже было проверено.`);
         // добавить слово в колонку .guessing .last-words в верх списка
-        const last_words_container = document.querySelector('.guessing .last-words');
         const html = `
             <div class="msg">
                 <div class="bg"></div>
@@ -58,7 +58,6 @@ async function process_message(user, nickname_color, word, force_win = false) {
         last_words_container.insertAdjacentHTML('afterbegin', html);
         return
     } else if (iwawwa.has(word)) {
-        const last_words_container = document.querySelector('.guessing .last-words');
         const pig = iwawwa_img[Math.floor(Math.random() * iwawwa_img.length)];
         const html = `
         <div class="msg">
@@ -84,7 +83,6 @@ async function process_message(user, nickname_color, word, force_win = false) {
     }
 
     if (!word_check.distance) {
-        const last_words_container = document.querySelector('.guessing .last-words');
         const html = `
             <div class="msg">
                 <div class="bg"></div>
@@ -97,20 +95,15 @@ async function process_message(user, nickname_color, word, force_win = false) {
         return
     }
 
-    if (word_check.distance == 1) {
-        handle_win(user);
-    }
-
-    // добавить слово в колонку .guessing .best-match в верх списка
-    const best_match_container = document.querySelector('.guessing .best-match');
-
     const new_message = message_template(word, word_check.distance, user['display-name'], nickname_color);
 
     console.log(word_check);
 
     // добавить слово в колонку .guessing .last-words в верх списка
-    const last_words_container = document.querySelector('.guessing .last-words');
     last_words_container.insertAdjacentHTML('afterbegin', new_message);
+
+    // добавить слово в колонку .guessing .best-match в верх списка
+    const best_match_container = document.querySelector('.guessing .best-match');
 
     // Создаем элемент из HTML строки
     const tempDiv = document.createElement('div');
@@ -136,6 +129,11 @@ async function process_message(user, nickname_color, word, force_win = false) {
         container.appendChild(newMsgElement);
     } else {
         container.insertBefore(newMsgElement, children[insertIndex]);
+    }
+
+    // обработка победы (слово угадано)
+    if (word_check.distance == 1) {
+        handle_win(user);
     }
 
 }
