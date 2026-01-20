@@ -1,5 +1,5 @@
-// Настройки клиента
-
+let channel_name = '';
+let restart_time = 20;
 let is_game_finished = false;
 const checked_words = new Set();
 const last_words_container = document.querySelector('.guessing .last-words');
