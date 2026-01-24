@@ -57,8 +57,7 @@ function create_chat_connection(channel_name = '') {
 
         // если в сообщении больше двух слов, 20 символов
         // слишком короткое или число, то игнорируем
-        if (message.split(' ').length > 2 || message.length > 20
-            || message.length === 1 || !isNaN(message)) return;
+        if (message.split(' ').length > 1 || message.length > 20 || message.length === 1 || !isNaN(message)) return;
 
         // prevent xss attack from message
         message = message.replace(/[^a-zA-Zа-яА-ЯёЁ0-9]/g, '');
