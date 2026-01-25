@@ -56,11 +56,32 @@
                 <button id="save-settings-btn">Сохранить</button>
             </div>
         </section>
-        <section id="leaderboard" class="content-box" style="display: none;">
-            <div class="title">🏆 Топ Победителей</div>
-            <div class="list"></div>
-            <div class="controls">
-                <button id="reset-leaderboard-btn" class="reset-btn">Сбросить таблицу</button>
+        <section id="leaderboard-statistic" style="display: none;">
+            <div id="leaderboard">
+                <div class="title">🏆 Топ Победителей</div>
+                <div class="list"></div>
+                <div class="controls">
+                    <button id="reset-leaderboard-btn" class="reset-btn">Сбросить таблицу</button>
+                </div>
+            </div>
+            <div id="statistic">
+                <div class="title">Статистика за раунд:</div>
+                <div class="container">
+                    <div>Кол-во участников:</div>
+                    <div id="uniq-users">0</div>
+                </div>
+                <div class="container">
+                    <div>Уникальных слов:</div>
+                    <div id="uniq-words">0</div>
+                </div>
+                <div class="container">
+                    <div>Повторных слов:</div>
+                    <div id="repeated-words">0</div>
+                </div>
+                <div class="container">
+                    <div>Длительность раунда:</div>
+                    <div id="round-time">0</div>
+                </div>
             </div>
         </section>
         <section id="winner" style="display: none;">
