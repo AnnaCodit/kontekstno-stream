@@ -68,7 +68,9 @@ section {
     position: relative;
 }
 
-#info {}
+#info {
+    text-align: center;
+}
 
 #settings {
     padding: 20px;
@@ -156,6 +158,37 @@ section {
 #leaderboard .controls {
     text-align: center;
     width: 100%;
+}
+
+#leaderboard-statistic {
+    align-items: normal;
+    gap: 20px;
+}
+
+#statistic {
+    padding: 20px;
+    background-color: #222;
+    border-radius: 10px;
+    max-width: 400px;
+    width: 100%;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    flex-direction: column;
+    position: relative;
+}
+
+#statistic .title {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #8800ff;
+}
+
+#statistic .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .reset-btn {
