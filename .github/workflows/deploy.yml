@@ -1,3 +1,4 @@
+# https://github.com/SamKirkland/FTP-Deploy-Action
 name: Deploy to FTP (only main)
 
 # Запускается только при push в ветку main
