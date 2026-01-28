@@ -3,7 +3,7 @@ let restart_time = 20;
 let is_game_finished = false;
 let roundStartTime, uniqWords, repeatWords, winTime;
 let uniqUsers = new Set();
-const checked_words = new Set();
+const checked_words = new Map();
 const last_words_container = document.querySelector('.guessing .last-words');
 
 const iwawwa = new Set(['ивавва', 'ивава', 'акане', 'аканэ', 'iwawwa', 'iwawa', 'akane']);
@@ -41,10 +41,6 @@ async function process_message(user, nickname_color, word, force_win = false) {
 
     if (is_game_finished) return;
 
-    if (!uniqUsers.has(user.username)) {
-        uniqUsers.add(user.username);
-    }
-
     // перевод слова в нижний регистр
     word = word.toLowerCase();
     // сделать первую букву большой
@@ -52,7 +48,10 @@ async function process_message(user, nickname_color, word, force_win = false) {
 
     // Проверяем, есть ли слово в списке
     if (checked_words.has(word)) {
-        repeatWords++
+        if (checked_words.get(word).distance) {
+            if (!uniqUsers.has(user.username)) { uniqUsers.add(user.username) }
+            repeatWords++
+        }
         console.log(`Слово "${word}" уже было проверено.`);
         // добавить слово в колонку .guessing .last-words в верх списка
         const html = `
@@ -89,14 +88,14 @@ async function process_message(user, nickname_color, word, force_win = false) {
         word_check = await kontekstno_query('score', word, secret_word_id);
     }
 
-    checked_words.add(word);
+    checked_words.set(word, {distance: word_check.distance});
 
     if (!word_check.distance) {
         const html = `
             <div class="msg">
                 <div class="msg-content">
                     <div class="word-and-distance">
-                        <div class="word">Слово ${word} не найдено в словаре</div>
+                        <div class="word">${word} не найдено в словаре</div>
                     </div>
                 </div>
             </div>`
@@ -108,6 +107,7 @@ async function process_message(user, nickname_color, word, force_win = false) {
     const new_message = message_template(word, word_check.distance, user['display-name'], nickname_color);
 
     console.log(word_check);
+    if (!uniqUsers.has(user.username)) { uniqUsers.add(user.username) }
     uniqWords++
 
     // добавить слово в колонку .guessing .last-words в верх списка
