@@ -290,8 +290,8 @@ section {
 }
 
 .guessing .msg .msg-content {
-    overflow: hidden;
-    /* Скрываем то, что не влезает при анимации */
+    /* overflow: hidden; */
+    /* Скрываем то, что не влезает при анимации. Потенциально наличие overflow правильнее, но я тестила оба варианта и не заметила разницы.. мб вернуться к этому в будущем. */
     border: 1px solid transparent;
     border-radius: 10px;
     position: relative;
