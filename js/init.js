@@ -111,7 +111,15 @@ if (saveBtn) {
         const restartInput = document.getElementById('restart-time');
 
         if (channelInput && channelInput.value) {
-            localStorage.setItem('channel_name', channelInput.value.trim());
+            let channelName = channelInput.value.trim();
+            if (channelName.includes('twitch.tv/')) {
+                const parts = channelName.split('twitch.tv/');
+                if (parts.length > 1) {
+                    channelName = parts[1].split('/')[0].split('?')[0];
+                    channelInput.value = channelName;
+                }
+            }
+            localStorage.setItem('channel_name', channelName);
         }
 
         if (restartInput && restartInput.value) {
