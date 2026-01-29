@@ -21,16 +21,12 @@ function updateLeaderboard(winnerName) {
     renderLeaderboard();
 }
 
-let cachedLeaderboardList = null;
-
 function renderLeaderboard() {
     const data = getLeaderboardData();
-    if (!cachedLeaderboardList) {
-        cachedLeaderboardList = document.querySelector('#leaderboard .list');
-    }
-    if (!cachedLeaderboardList) return;
+    listContainer = document.querySelector('#leaderboard .list');
+    if (!listContainer) return;
 
-    cachedLeaderboardList.innerHTML = '';
+    listContainer.innerHTML = '';
 
     // Convert to array and sort
     const sortedWinners = Object.entries(data)
@@ -38,7 +34,7 @@ function renderLeaderboard() {
         .slice(0, 5); // Take top 5
 
     if (sortedWinners.length === 0) {
-        cachedLeaderboardList.innerHTML = '<div style="text-align: center; color: #777;">Пока нет победителей</div>';
+        listContainer.innerHTML = '<div style="text-align: center; color: #777;">Пока нет победителей</div>';
         return;
     }
 
@@ -64,7 +60,7 @@ function renderLeaderboard() {
         scoreDiv.textContent = `${wins} 🏆`;
         itemDiv.appendChild(scoreDiv);
 
-        cachedLeaderboardList.appendChild(itemDiv);
+        listContainer.appendChild(itemDiv);
     });
 }
 
@@ -87,8 +83,8 @@ if (leaderboardBtn) {
         if (!isVisible) {
             renderLeaderboard();
             renderStatistic();
-            lbStatRender = setInterval(function() {
-                if (is_game_finished) {clearInterval(lbStatRender)}
+            lbStatRender = setInterval(function () {
+                if (is_game_finished) { clearInterval(lbStatRender) }
                 renderStatistic();
             }, 1000)
         } else {
@@ -102,7 +98,7 @@ if (resetLeaderboardBtn) {
     resetLeaderboardBtn.addEventListener('click', resetLeaderboard);
 }
 
-function pad ( val ) { return val > 9 ? val : "0" + val; }
+function pad(val) { return val > 9 ? val : "0" + val; }
 
 let cachedUniqUsersEl = null;
 let cachedUniqWordsEl = null;
@@ -110,20 +106,20 @@ let cachedRepeatedWordsEl = null;
 let cachedRoundTimeEl = null;
 
 function renderStatistic() {
-    if (!is_game_finished) {winTime = Date.now()}
+    if (!is_game_finished) { winTime = Date.now() }
     let roundTime = Math.floor((winTime - roundStartTime) / 1000);
-    if (!roundTime) { roundTime = 0}
-    const roundTimeSec = pad(roundTime%60);
-    const roundTimeMin = pad(parseInt(roundTime/60,10));
+    if (!roundTime) { roundTime = 0 }
+    const roundTimeSec = pad(roundTime % 60);
+    const roundTimeMin = pad(parseInt(roundTime / 60, 10));
     const roundTimeQt = roundTimeMin + ':' + roundTimeSec;
 
-    if (!cachedUniqUsersEl) cachedUniqUsersEl = document.getElementById('uniq-users');
-    if (!cachedUniqWordsEl) cachedUniqWordsEl = document.getElementById('uniq-words');
-    if (!cachedRepeatedWordsEl) cachedRepeatedWordsEl = document.getElementById('repeated-words');
-    if (!cachedRoundTimeEl) cachedRoundTimeEl = document.getElementById('round-time');
+    cachedUniqUsersEl ||= document.getElementById('uniq-users');
+    cachedUniqWordsEl ||= document.getElementById('uniq-words');
+    cachedRepeatedWordsEl ||= document.getElementById('repeated-words');
+    cachedRoundTimeEl ||= document.getElementById('round-time');
 
-    if (cachedUniqUsersEl) cachedUniqUsersEl.innerText = (typeof uniqUsers.size !== 'undefined' ? uniqUsers.size : 0);
-    if (cachedUniqWordsEl) cachedUniqWordsEl.innerText = (typeof uniqWords !== 'undefined' ? uniqWords : 0);
-    if (cachedRepeatedWordsEl) cachedRepeatedWordsEl.innerText = (typeof repeatWords !== 'undefined' ? repeatWords : 0);
-    if (cachedRoundTimeEl) cachedRoundTimeEl.innerText = (typeof roundTimeQt !== 'undefined' ? roundTimeQt : 0);
+    if (cachedUniqUsersEl) cachedUniqUsersEl.innerText = uniqUsers?.size ?? 0;
+    if (cachedUniqWordsEl) cachedUniqWordsEl.innerText = uniqWords ?? 0;
+    if (cachedRepeatedWordsEl) cachedRepeatedWordsEl.innerText = repeatWords ?? 0;
+    if (cachedRoundTimeEl) cachedRoundTimeEl.innerText = roundTimeQt ?? '00:00';
 }
