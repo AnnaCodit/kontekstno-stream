@@ -117,6 +117,14 @@ section {
     font-size: 18px;
 }
 
+#settings .setting:last-child {
+    margin-bottom: 0;
+}
+
+#settings button {
+    margin-top: 2px;
+}
+
 #leaderboard {
     padding: 20px;
     background-color: #222;
@@ -376,14 +384,25 @@ input[type="submit"] {
     font-size: 18px;
     display: inline-block;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
 }
 
 .button:hover,
 button:hover,
 input[type="button"]:hover,
 input[type="submit"]:hover {
-    background-color: #444;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    /* background-color: #444; */
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    filter: brightness(1.1);
+}
+
+.button:active,
+button:active,
+input[type="button"]:active,
+input[type="submit"]:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 @keyframes fadeInOpacity {
