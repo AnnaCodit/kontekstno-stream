@@ -21,13 +21,17 @@ function updateLeaderboard(winnerName) {
     renderLeaderboard();
 }
 
+let cachedLeaderboardList = null;
+
 function renderLeaderboard() {
     renderStatistic();
     const data = getLeaderboardData();
-    const listContainer = document.querySelector('#leaderboard .list');
-    if (!listContainer) return;
+    if (!cachedLeaderboardList) {
+        cachedLeaderboardList = document.querySelector('#leaderboard .list');
+    }
+    if (!cachedLeaderboardList) return;
 
-    listContainer.innerHTML = '';
+    cachedLeaderboardList.innerHTML = '';
 
     // Convert to array and sort
     const sortedWinners = Object.entries(data)
@@ -35,7 +39,7 @@ function renderLeaderboard() {
         .slice(0, 5); // Take top 5
 
     if (sortedWinners.length === 0) {
-        listContainer.innerHTML = '<div style="text-align: center; color: #777;">Пока нет победителей</div>';
+        cachedLeaderboardList.innerHTML = '<div style="text-align: center; color: #777;">Пока нет победителей</div>';
         return;
     }
 
@@ -61,7 +65,7 @@ function renderLeaderboard() {
         scoreDiv.textContent = `${wins} 🏆`;
         itemDiv.appendChild(scoreDiv);
 
-        listContainer.appendChild(itemDiv);
+        cachedLeaderboardList.appendChild(itemDiv);
     });
 }
 
@@ -99,6 +103,11 @@ if (resetLeaderboardBtn) {
 
 function pad ( val ) { return val > 9 ? val : "0" + val; }
 
+let cachedUniqUsersEl = null;
+let cachedUniqWordsEl = null;
+let cachedRepeatedWordsEl = null;
+let cachedRoundTimeEl = null;
+
 function renderStatistic() {
     if (!is_game_finished) {winTime = Date.now()}
     let roundTime = Math.floor((winTime - roundStartTime) / 1000);
@@ -106,8 +115,14 @@ function renderStatistic() {
     const roundTimeSec = pad(roundTime%60);
     const roundTimeMin = pad(parseInt(roundTime/60,10));
     const roundTimeQt = roundTimeMin + ':' + roundTimeSec;
-    document.getElementById('uniq-users').innerText = (typeof uniqUsers.size !== 'undefined' ? uniqUsers.size : 0);
-    document.getElementById('uniq-words').innerText = (typeof uniqWords !== 'undefined' ? uniqWords : 0);
-    document.getElementById('repeated-words').innerText = (typeof repeatWords !== 'undefined' ? repeatWords : 0);
-    document.getElementById('round-time').innerText = (typeof roundTimeQt !== 'undefined' ? roundTimeQt : 0);
+
+    if (!cachedUniqUsersEl) cachedUniqUsersEl = document.getElementById('uniq-users');
+    if (!cachedUniqWordsEl) cachedUniqWordsEl = document.getElementById('uniq-words');
+    if (!cachedRepeatedWordsEl) cachedRepeatedWordsEl = document.getElementById('repeated-words');
+    if (!cachedRoundTimeEl) cachedRoundTimeEl = document.getElementById('round-time');
+
+    if (cachedUniqUsersEl) cachedUniqUsersEl.innerText = (typeof uniqUsers.size !== 'undefined' ? uniqUsers.size : 0);
+    if (cachedUniqWordsEl) cachedUniqWordsEl.innerText = (typeof uniqWords !== 'undefined' ? uniqWords : 0);
+    if (cachedRepeatedWordsEl) cachedRepeatedWordsEl.innerText = (typeof repeatWords !== 'undefined' ? repeatWords : 0);
+    if (cachedRoundTimeEl) cachedRoundTimeEl.innerText = (typeof roundTimeQt !== 'undefined' ? roundTimeQt : 0);
 }
