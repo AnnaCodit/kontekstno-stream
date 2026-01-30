@@ -4,11 +4,11 @@ function randomInRange(min, max) {
 }
 
 const confetti_win = (endtime) => {
-  setInterval(function() {
+  const interval = setInterval(function() {
     const defaults = { count: 3, spread: 45 };
     const timeLeft = endtime - Date.now();
     if (timeLeft <= 0) {
-      return clearInterval(confetti_win);
+      return clearInterval(interval);
     }
     confetti(
       Object.assign({}, defaults, {
@@ -34,11 +34,11 @@ const confetti_fireworks = (endtime) => {
     zIndex: 0,
   };
 
-  setInterval(function() {
+  const interval = setInterval(function() {
     const timeLeft = endtime - Date.now();
 
     if (timeLeft <= 0) {
-      return clearInterval(confetti_fireworks);
+      return clearInterval(interval);
     }
 
     confetti(
